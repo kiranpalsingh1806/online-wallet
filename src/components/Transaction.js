@@ -5,7 +5,7 @@ import { GlobalContext } from '../context/GlobalState';
 function moneyFormatter(num) {
     let p = num.toFixed(2).split('.');
     return (
-        '$ ' + (p[0].split('')[0] === '-' ? '-' : '') +
+        '$ ' +
         p[0]
             .split('')
             .reverse()
@@ -17,17 +17,14 @@ function moneyFormatter(num) {
     );
 }
 
-export const Balance = () => {
-    const { transactions } = useContext(GlobalContext);
+export const Transaction = ({ transaction }) => {
+    const { deleteTransaction } = useContext(GlobalContext);
 
-    const amounts = transactions.map(transaction => transaction.amount);
-
-    const total = amounts.reduce((acc, item) => (acc += item), 0);
+    const sign = transaction.amount < 0 ? '-' : '+';
 
     return (
-        <>
-            <h4>Your Balance</h4>
-            <h1>{moneyFormatter(total)}</h1>
-        </>
+        <li className={transaction.amount < 0 ? 'minus' : 'plus'}>
+            {transaction.text} <span>{sign}{moneyFormatter(transaction.amount)}</span><button onClick={() => deleteTransaction(transaction.id)} className="delete-btn">x</button>
+        </li>
     )
 }
